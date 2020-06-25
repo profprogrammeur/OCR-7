@@ -1,4 +1,4 @@
-Installation du projet 
+**Installation du projet**
 
 Installer Node :
 Installer la dernière version de node et npm ( https://nodejs.org/en/ ) si nécessaire.
