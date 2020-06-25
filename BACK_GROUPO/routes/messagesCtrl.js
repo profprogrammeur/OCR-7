@@ -106,38 +106,18 @@ module.exports = {
         console.log("UserId : " + userId)
         if (req.body.authId !== undefined) {
             userId = req.body.authId
-        }else {
+        } else {
             userId = jwtUtils.getUserId(headerAuth)
         }
 
-
-        // var headerAuth = req.headers['authorization'];
-        // var userId = jwtUtils.getUserId(headerAuth);
         console.log("messageId : " + req.body.id)
-        // console.log("userId : " + jwtUtils.getUserId(headerAuth))
-
         const messageId = req.body.id
-        // Params
-        // var title = req.body.title;
-        // var content = req.body.content;
+
 
         asyncLib.waterfall([
-            // function (done) {
-            //     models.User.findOne({
-            //         where: { id:17 },
-            //         where: {isAdmin: 1 }
-            //     })
-            //         .then(function (message) {
-            //             done(null, message);
-            //         })
-            //         .catch(function (err) {
-            //             return res.status(500).json({ 'error': 'unable to verify user' });
-            //         });
-            // },
             function (done) {
                 models.Message.findOne({
-                    where: { id: messageId , userId: userId }
-                    // where: { userId: 13 }
+                    where: { id: messageId, userId: userId }
                 })
                     .then(function (message) {
                         done(null, message);
@@ -149,8 +129,7 @@ module.exports = {
             function (message, done) {
                 if (message) {
                     models.Message.destroy({
-                        where: { id: messageId }  ,
-                        // where: { userId: 13 }
+                        where: { id: messageId },
                     })
                         .then(function (message) {
                             done(message);
@@ -160,8 +139,8 @@ module.exports = {
                 }
             },
         ], function (message) {
-                if (message) {
-                    return res.status(201).json(message);
+            if (message) {
+                return res.status(201).json(message);
             } else {
                 return res.status(500).json({ 'error': 'cannot post message' });
             }

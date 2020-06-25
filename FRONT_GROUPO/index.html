@@ -22,11 +22,11 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">                     
                         <div class="modal-body">
-                            Do you really want to delete this?
+                            Voulez-vous vraiment supprimer ceci ?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">NOP</button>
-                            <button @click="deleteUser(indexUser)" type="button" class="btn btn-primary">YEP</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">NON</button>
+                            <button @click="deleteUser(indexUser)" type="button" class="btn btn-primary">OUI</button>
                         </div>
                     </div>
                 </div>
@@ -35,40 +35,40 @@
 <div style="width: 100vw;" class="container" v-bind:class="{isAdmin: profile.isAdmin}">
 <!-- <form class="row"> -->
     <button v-show="logged || registerForm" class=" float-right mb-5 btn btn-lg btn-danger " type="submit"
-        @click="logOut()">Exit</button><br>
+        @click="logOut()">Sortir</button><br>
 <div class="col-sm">
      
 
-    <img class="mb-1" v-bind:src="profile.image" alt=""
+    <img class="mb-1 rounded-circle" v-bind:src="profile.image"  alt=""
         width="50%">
     <h2 v-if="logged" class="text-capitalize">{{profile.username}}</h2>
     <h3 :class="information.color">{{information.text}}</h3>
    
     <!-- <form> -->
     <label for="inputUser" class="sr-only">User Name</label>
-    <input v-if="!logged || registerForm" v-model="profile.username"type="text" class="form-control mb-1" placeholder="User Name" required autofocus>
+    <input v-if="!logged || registerForm" v-model="profile.username"type="text" class="form-control mb-1" placeholder="Nom d'utilisateur" required autofocus>
     <label for="inputEmail" class="sr-only">Email address</label>
-    <input v-if="registerForm" v-model="profile.email" type="email" id="inputEmail" class="form-control mb-1" placeholder="Email address" required autofocus>
+    <input v-if="registerForm" v-model="profile.email" type="email" id="inputEmail" class="form-control mb-1" placeholder="Adresse email" required autofocus>
     <label for="inputPassword" class="sr-only ">Password</label>
-    <input v-on:keyup.enter="signIn" v-if="!logged" v-model="profile.password" type="password" class="form-control mb-1" placeholder="Password" required>
-    <input v-if="registerForm" v-model="profile.image" type="text"  class="form-control" placeholder="Image" required>
+    <input v-on:keyup.enter="signIn" v-if="!logged" v-model="profile.password" type="password" class="form-control mb-1" placeholder="Mot de passe" required>
+    <input v-if="registerForm" v-model="profile.image" type="text"  class="form-control" placeholder="Image du profil" required>
 
 </div>
 
 
 <div class="col-sm">
 
-    <button v-show="!logged && !registerForm" class="btn btn-lg btn-primary btn-block" type="submit"  @click="signIn()">Sign in</button>
-    <button v-show="!logged && !registerForm"class="btn btn-lg btn-warning btn-block" type="submit" @click="registerForm = true">New User</button>
-   
-    <button v-show="registerForm && logged" class="btn btn-lg btn-warning btn-block" type="submit" @click="updateProfile()">Update Profile</button>
-    <button v-show="registerForm && !logged" class="btn btn-lg btn-warning btn-block" type="submit" @click="register()">Register</button>
-    <button v-show="logged && registerForm" class="btn btn-lg btn-danger btn-block" type="submit" @click="removeProfile()">Remove Profile</button>
-    <button v-show="logged && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit" @click="registerForm = true">Modify Profile</button>
-    <button v-show="logged && profile.isAdmin && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit" @click="allUsers()">All Users</button>
+    <button v-show="!logged && !registerForm" class="btn btn-lg btn-primary btn-block" type="submit"  @click="signIn()">S'inscrire</button>
+    <button v-show="!logged && !registerForm"class="btn btn-lg btn-warning btn-block" type="submit" @click="registerForm = true">Nouvel utilisateur</button>
 
-    <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit" @click="allMessages()">All Messages</button>
-    <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit" @click="postMessage()">Post Message</button>
+    <button v-show="registerForm && logged" class="btn btn-lg btn-warning btn-block" type="submit" @click="updateProfile()">Modifier le profil</button>
+    <button v-show="registerForm && !logged" class="btn btn-lg btn-warning btn-block" type="submit" @click="register()">S'enregistrer</button>
+    <button v-show="logged && registerForm" class="btn btn-lg btn-danger btn-block" type="submit" @click="removeProfile()">Supprimer le profil</button>
+    <button v-show="logged && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit" @click="registerForm = true">Modifier le profil</button>
+    <button v-show="logged && profile.isAdmin && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit" @click="allUsers()">Tous les profils</button>
+
+    <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit" @click="allMessages()">Tous les messages</button>
+    <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit" @click="postMessage()">Poster le message</button>
 
 </div>
 
@@ -85,7 +85,7 @@
             <span @click="like(index)">&#10084</span> 
             <span @click="dislike(index)">&#128078</span> 
             <button v-if="written(post)" class="  btn-danger rounded" @click="deleteMessage(index)">X</button>
-    <br > {{post.title}} <br>
+    <br > <i class="text-capitalize" >{{post.title}}</i> <br>
 </li>
 </ul>
 
@@ -93,7 +93,7 @@
     <li v-for="(user,index) in users" class="list-group-item">
         id : {{user.id}} 
         <button  class="  btn-danger rounded" @click="modal(index)">X</button><br>
-        username : {{user.username}} <br>
+        nom : {{user.username}} <br>
         email : {{user.email}} <br>
     
     </li>
@@ -109,22 +109,17 @@
                         editProfile:false, 
                         timeOutId:null,   
                         infoText:"",             
-                        // groupomaniaUser: {},
                         information:{text:"",color:"text-danger"},
                         message: {},
                         posts: [],
                         users:[],
                         mesDonnees : new FormData(),
                         token:"",
-                        profile:{},
+                        profile:{image: 'groupo.png'},
                         likes:0,
                         logged:false,
                         registerForm:false,
                         indexUser:0,
-                        
-                        // targetedUserProfile:0
-                        // written:true
-                       
                     },
                     mounted() {
                     if (localStorage.getItem('profile')) {
@@ -141,9 +136,6 @@
                             this.indexUser=index
                            $('#modalAlert').modal()
                         },
-                        // modalAlert(deleteItem){
-                        //     deleteItem()
-                        // },
                         htmlEntities(str) {
                             return String(str).replace(/&apos;/g, "′").replace(/&quot;/g, '"');
                         },
@@ -171,9 +163,7 @@
                            let parsed = JSON.stringify(this.profile);
                             localStorage.setItem('profile', parsed);
                         },
-                        // displayLike(index){return  this.posts[index].likes},
                         dislike(index) {
-                            // message id = (this.posts[index].id)
                             axios.post('http://localhost:8080/api/messages/'+ this.posts[index].id + '/vote/dislike', {},
                                 {
                                 headers: { Authorization: ("Bearer " + this.token) }
@@ -201,11 +191,8 @@
                                 password: this.profile.password,
                                 username: this.profile.username,
                                 email: this.profile.email,
-                                // bio: this.profile.bio, 
                                 image: this.profile.image,      
                             }).then(response => {console.log(response.data)
-                            // this.information.text = "Bien enregistré";
-                            // this.information.color = "text-success";
                             this.signIn();
 
                             }
@@ -230,20 +217,11 @@
                                  }, {
                                  headers: { Authorization: ("Bearer " + this.token) }
                              }
-                            //  {
-                            //     headers: { Authorization: ("Bearer " + this.token) }
-                            //     , data: {
-                            //     //   password: this.profile.password,
-                            //     username: this.profile.username,
-                            //     email: this.profile.email,
-                            //     // bio: this.profile.bio, 
-                            //     image: this.profile.image,
-                            //     }  
-                            // }
+                    
                             ).then(response => {
                                 console.log(response.data)
-                                // this.information.text = "Bien enregistré";
-                                // this.information.color = "text-success";
+                                this.information.text = "Bien enregistré";
+                                this.information.color = "text-success";
                                 this.signIn();
 
                             }
@@ -267,7 +245,6 @@
                             .then(response => {
                                 this.logged=true;
                                 this.registerForm=false;
-                                // console.log(response.data.isAdmin);
                                 this.token= response.data.token;
                                 this.profile.userId= response.data.userId
                                 this.profile.isAdmin=response.data.isAdmin
@@ -300,7 +277,7 @@
                         },
                         postMessage() {
                             axios.post('http://localhost:8080/api/messages/new', {
-                               title: "signé " + this.profile.username,
+                               title: this.profile.username,
                                 content: this.message.content,
                             }, {
                                 headers: { Authorization: ("Bearer " + this.token) }
@@ -313,29 +290,7 @@
                                 .catch(error => console.log(error.response))
                         },
                         deleteMessage(index) {
-                            // console.log(this.token );
-                            // alert('Are you sure to delete this message ? ' )
-                        //     const asyncFunction = async () => {
-                        //         const promise1Result = await $('#modalAlert').modal();
-                        //         console.log(promise1Result);
-                              
-                        //     }
-                        //    function resolveAfter2Seconds() {
-                        //         return new Promise(resolve => {
-                        //             $('#modalAlert').modal();
-                        //         });
-                        //     }
-
-                        //     async function asyncCall() {
-                        //         console.log('calling');
-                        //         const result = await resolveAfter2Seconds();
-                        //         console.log(result);
-                        //         // expected output: 'resolved'
-                        //     }
-
-                        //     asyncCall();
-                            // console.log(this.posts[index].UserId);
-
+                            alert('Voulez vous supprimer : ' + this.posts[index].content + ' ? ? ?')
                             axios.delete('http://localhost:8080/api/messages/new', { 
                                 headers: { Authorization: ("Bearer " + this.token) }
                             , data : {id: this.posts[index].id,
@@ -350,7 +305,6 @@
                         },
                          deleteUser(index) {
                             // alert('Are you sure to delete : ' + this.users[index].username + ' ? ? ?')
-                            // console.log(this.users[index].id)
                             axios.delete('http://localhost:8080/api/users/me', {
                                 headers: { Authorization: ("Bearer " + this.token) }
                                 , data: { userId: this.users[index].id }
@@ -363,9 +317,7 @@
                                 .catch(error => console.log(error.response))
                         },
                         removeProfile(){
-                            alert('Are you sure to delete : ' + this.profile.username + ' ? ? ?')
-                            // this.profile.password = "ahahah1";
-                            // this.profile.username = "ahahah";
+                            alert('Voulez vous supprimer : ' + this.profile.username + ' ? ? ?')
                             axios.delete('http://localhost:8080/api/users/me', {
                            headers: { Authorization: ("Bearer " + this.token) }
                             })
@@ -375,10 +327,7 @@
                                 .catch(error => {
                                     console.log(error.response);
                                     this.information.text = error.response.data.error;
-                                    this.information.color = "text-danger";
-                                    setTimeout(() => {
-                                        this.information.text = ""
-                                    }, (1000));
+                                   ;
                                 }
                                 )
 
