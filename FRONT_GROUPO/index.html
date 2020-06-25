@@ -79,12 +79,12 @@
 
 <ul  v-show="logged" class="list-group mt-3 " >
     <li   v-for="(post,index) in posts" class="list-group-item ">
+                    <h4>{{htmlEntities(post.content)}}</h4> <br> 
         publié le : {{formatDate(post.updatedAt)}}  <br>
         <span  class="badge badge-primary badge-pill"> {{post.likes}}</span> 
             <span @click="like(index)">&#10084</span> 
             <span @click="dislike(index)">&#128078</span> 
             <button v-if="written(post)" class="  btn-danger rounded" @click="deleteMessage(index)">X</button>
-            <br>    {{htmlEntities(post.content)}} 
     <br > {{post.title}} <br>
 </li>
 </ul>
@@ -173,8 +173,8 @@
                         },
                         // displayLike(index){return  this.posts[index].likes},
                         dislike(index) {
-                            // console.log("token : " + this.token)
-                            axios.post('http://localhost:8080/api/messages/11/vote/dislike', {},
+                            // message id = (this.posts[index].id)
+                            axios.post('http://localhost:8080/api/messages/'+ this.posts[index].id + '/vote/dislike', {},
                                 {
                                 headers: { Authorization: ("Bearer " + this.token) }
                                 }).then(response => {                   
@@ -183,7 +183,7 @@
                                 .catch(error => console.log(error.response))
                         },
                         like(index){                           
-                            axios.post('http://localhost:8080/api/messages/11/vote/like',{},
+                            axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/like',{},
                              {
                                 headers: { Authorization: ("Bearer " + this.token) }
                                 }).then(response => {                             
