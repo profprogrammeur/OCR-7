@@ -38,11 +38,9 @@
         <div style="width: 100vw;" class="container" v-bind:class="{isAdmin: profile.isAdmin}">
             <!-- <form class="row"> -->
             <div class="row justify-content-between mb-2">
-                <img class="mb-1 mt-2 ml-3 rounded-circle " src="groupo.png" alt="logo"  width="30%" height="30%">
+                <img class="mb-1 mt-2 ml-3 rounded-circle " src="groupo.png" alt="logo" width="30%" height="30%">
                 <button v-show="logged || registerForm" class="  mr-1 mb-1 btn btn-sm btn-outline-*  " type="submit"
                     @click="logOut()">Sortir</button>
-
-                <!-- <button v-show="logged || registerForm" class=" mb-5 btn btn-lg btn-danger " type="submit" @click="logOut()">Sortir</button><br> -->
             </div>
 
             <div class="col-sm ">
@@ -147,7 +145,6 @@
                     try {
                         this.profile = JSON.parse(localStorage.getItem('profile'));
                         if (this.profile.token) { this.signIn() };
-                        // if (this.profile.image == undefined ) {this.profile.image = "groupo.png"}
                     } catch (e) {
                         localStorage.removeItem('profile');
 
@@ -212,7 +209,6 @@
 
 
                 register() {
-                    // if (this.profile.image == undefined) { this.profile.image = "groupo.png" }                        
                     axios.post('http://localhost:8080/api/users/register', {
                         password: this.profile.password,
                         username: this.profile.username,
@@ -351,18 +347,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-<!-- <div class="checkbox mb-3"> -->
-<!-- <label>
-        <input type="checkbox" value="remember-me"> Remember me
-    </label> -->
-<!-- </div> -->
