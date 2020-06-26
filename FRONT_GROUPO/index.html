@@ -1,348 +1,355 @@
 <!DOCTYPE html>
-<html class="no-js"> 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <link rel="icon" type="image/png" href="groupomania.PNG">
-        <title>GROUPOMANIA</title>
+<html class="no-js">
 
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="signin.css">
-    </head>
-    <body >
-        
-        <div id="app" class="text-center " >
-            <!-- Modal -->
-            <div  class="modal fade" id="modalAlert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">                     
-                        <div class="modal-body">
-                            Voulez-vous vraiment supprimer ceci ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">NON</button>
-                            <button @click="deleteUser(indexUser)" type="button" class="btn btn-primary">OUI</button>
-                        </div>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/png" href="groupomania.PNG">
+    <title>GROUPOMANIA</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="signin.css">
+</head>
+
+<body>
+
+    <div id="app" class="text-center ">
+        <!-- Modal -->
+        <div class="modal fade" id="modalAlert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Voulez-vous vraiment supprimer ceci ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">NON</button>
+                        <button @click="deleteUser(indexUser)" type="button" class="btn btn-primary">OUI</button>
                     </div>
                 </div>
             </div>
-
-<div style="width: 100vw;" class="container" v-bind:class="{isAdmin: profile.isAdmin}">
-<!-- <form class="row"> -->
-    <button v-show="logged || registerForm" class=" float-right mb-5 btn btn-lg btn-danger " type="submit"
-        @click="logOut()">Sortir</button><br>
-<div class="col-sm">
-     
-
-    <img class="mb-1 rounded-circle" v-bind:src="profile.image"  alt=""
-        width="50%">
-    <h2 v-if="logged" class="text-capitalize">{{profile.username}}</h2>
-    <h3 :class="information.color">{{information.text}}</h3>
-   
-    <!-- <form> -->
-    <label for="inputUser" class="sr-only">User Name</label>
-    <input v-if="!logged || registerForm" v-model="profile.username"type="text" class="form-control mb-1" placeholder="Nom d'utilisateur" required autofocus>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input v-if="registerForm" v-model="profile.email" type="email" id="inputEmail" class="form-control mb-1" placeholder="Adresse email" required autofocus>
-    <label for="inputPassword" class="sr-only ">Password</label>
-    <input v-on:keyup.enter="signIn" v-if="!logged" v-model="profile.password" type="password" class="form-control mb-1" placeholder="Mot de passe" required>
-    <input v-if="registerForm" v-model="profile.image" type="text"  class="form-control" placeholder="Image du profil" required>
-
-</div>
-
-
-<div class="col-sm">
-
-    <button v-show="!logged && !registerForm" class="btn btn-lg btn-primary btn-block" type="submit"  @click="signIn()">S'inscrire</button>
-    <button v-show="!logged && !registerForm"class="btn btn-lg btn-warning btn-block" type="submit" @click="registerForm = true">Nouvel utilisateur</button>
-
-    <button v-show="registerForm && logged" class="btn btn-lg btn-warning btn-block" type="submit" @click="updateProfile()">Modifier le profil</button>
-    <button v-show="registerForm && !logged" class="btn btn-lg btn-warning btn-block" type="submit" @click="register()">S'enregistrer</button>
-    <button v-show="logged && registerForm" class="btn btn-lg btn-danger btn-block" type="submit" @click="removeProfile()">Supprimer le profil</button>
-    <button v-show="logged && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit" @click="registerForm = true">Modifier le profil</button>
-    <button v-show="logged && profile.isAdmin && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit" @click="allUsers()">Tous les profils</button>
-
-    <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit" @click="allMessages()">Tous les messages</button>
-    <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit" @click="postMessage()">Poster le message</button>
-
-</div>
-
-<!-- </form> -->
-    <label for="message" class="sr-only ">message</label>
-    <input v-on:keyup.enter="postMessage" v-show="logged && !registerForm" v-model="message.content" type="text" id="inputUser" class=" form-control mt-2" placeholder="Ajouter un message" required
-        autofocus>
-
-<ul  v-show="logged" class="list-group mt-3 " >
-    <li   v-for="(post,index) in posts" class="list-group-item mt-2 ">
-                    <h4>{{htmlEntities(post.content)}}</h4> 
-        publié le : {{formatDate(post.updatedAt)}}  <br>
-        <span  class="badge badge-primary badge-pill"> {{post.likes}}</span> 
-            <span @click="like(index)">&#10084</span> 
-            <span @click="dislike(index)">&#128078</span> 
-            <button v-if="written(post)" class="  btn-danger rounded" @click="deleteMessage(index)">X</button>
-    <br > <i class="text-capitalize" >{{post.title}}</i> <br>
-</li>
-</ul>
-
-<ul v-show="logged" class="list-group mt-3">
-    <li v-for="(user,index) in users" class="list-group-item">
-        id : {{user.id}} 
-        <button  class="  btn-danger rounded" @click="modal(index)">X</button><br>
-        nom : {{user.username}} <br>
-        email : {{user.email}} <br>
-    
-    </li>
-</ul>
-</div>
-
         </div>
 
-        <script>
-            var app = new Vue({
-                    el: '#app',
-                    data: {    
-                        editProfile:false, 
-                        timeOutId:null,   
-                        infoText:"",             
-                        information:{text:"",color:"text-danger"},
-                        message: {},
-                        posts: [],
-                        users:[],
-                        mesDonnees : new FormData(),
-                        token:"",
-                        profile:{image: 'groupo.png'},
-                        likes:0,
-                        logged:false,
-                        registerForm:false,
-                        indexUser:0,
-                    },
-                    mounted() {
-                    if (localStorage.getItem('profile')) {
-                        try {
-                            this.profile = JSON.parse(localStorage.getItem('profile'));
-                            if (this.profile.token){this.signIn()};
-                        } catch (e) {
-                            localStorage.removeItem('profile');
-                        }
+        <div style="width: 100vw;" class="container" v-bind:class="{isAdmin: profile.isAdmin}">
+            <!-- <form class="row"> -->
+            <div class="row justify-content-between mb-2">
+                <img class="mb-1 mt-2 ml-3 rounded-circle " src="groupo.png" alt="logo"  width="30%" height="30%">
+                <button v-show="logged || registerForm" class="  mr-1 mb-1 btn btn-sm btn-outline-*  " type="submit"
+                    @click="logOut()">Sortir</button>
+
+                <!-- <button v-show="logged || registerForm" class=" mb-5 btn btn-lg btn-danger " type="submit" @click="logOut()">Sortir</button><br> -->
+            </div>
+
+            <div class="col-sm ">
+
+
+                <img v-if="logged" class="mb-1 rounded-circle" v-bind:src="profile.image" alt="image du profil"
+                    width="50%">
+                <h2 v-if="logged" class="text-capitalize">{{profile.username}}</h2>
+
+                <!-- <form> -->
+                <label for="inputUser" class="sr-only">User Name</label>
+                <input v-if="!logged || registerForm" v-model="profile.username" type="text" class="form-control mb-1"
+                    placeholder="Nom d'utilisateur" required autofocus>
+                <label for="inputEmail" class="sr-only">Email address</label>
+                <input v-if="registerForm" v-model="profile.email" type="email" id="inputEmail"
+                    class="form-control mb-1" placeholder="Adresse email" required autofocus>
+                <label for="inputPassword" class="sr-only ">Password</label>
+                <input v-on:keyup.enter="signIn" v-if="!logged" v-model="profile.password" type="password"
+                    class="form-control mb-1" placeholder="Mot de passe" required>
+                <input v-if="registerForm" v-model="profile.image" type="text" class="form-control"
+                    placeholder="Image du profil" required>
+
+            </div>
+
+
+            <div class="col-sm">
+
+                <button v-show="!logged && !registerForm" class="btn btn-lg btn-primary btn-block" type="submit"
+                    @click="signIn()">CONNEXION</button>
+                <button v-show="!logged && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit"
+                    @click="registerForm = true">Nouvel utilisateur</button>
+
+                <button v-show="registerForm && logged" class="btn btn-lg btn-warning btn-block" type="submit"
+                    @click="updateProfile()">Modifier le profil</button>
+                <button v-show="registerForm && !logged" class="btn btn-lg btn-warning btn-block" type="submit"
+                    @click="register()">S'enregistrer</button>
+                <button v-show="logged && registerForm" class="btn btn-lg btn-danger btn-block" type="submit"
+                    @click="removeProfile()">Supprimer le profil</button>
+                <button v-show="logged && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit"
+                    @click="registerForm = true">Modifier le profil</button>
+                <button v-show="logged && profile.isAdmin && !registerForm" class="btn btn-lg btn-warning btn-block"
+                    type="submit" @click="allUsers()">Tous les profils</button>
+
+                <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit"
+                    @click="allMessages()">Tous les messages</button>
+                <button v-show="logged  && !registerForm" class="btn btn-lg btn-success btn-block" type="submit"
+                    @click="postMessage()">Poster le message</button>
+
+            </div>
+
+            <!-- </form> -->
+            <label for="message" class="sr-only ">message</label>
+            <input v-on:keyup.enter="postMessage" v-show="logged && !registerForm" v-model="message.content" type="text"
+                id="inputUser" class=" form-control mt-2" placeholder="Ajouter un message" required autofocus>
+
+            <ul v-show="logged" class="list-group mt-3 ">
+                <li v-for="(post,index) in posts" class="list-group-item mt-2 ">
+                    <h4>{{htmlEntities(post.content)}}</h4>
+                    publié le : {{formatDate(post.updatedAt)}} <br>
+                    <span class="badge badge-primary badge-pill"> {{post.likes}}</span>
+                    <span @click="like(index)">&#10084</span>
+                    <span @click="dislike(index)">&#128078</span>
+                    <button v-if="written(post)" class="  btn-danger rounded" @click="deleteMessage(index)">X</button>
+                    <br> <i class="text-capitalize">{{post.title}}</i> <br>
+                </li>
+            </ul>
+
+            <ul v-show="logged" class="list-group mt-3">
+                <li v-for="(user,index) in users" class="list-group-item">
+                    id : {{user.id}}
+                    <button class="  btn-danger rounded" @click="modal(index)">X</button><br>
+                    nom : {{user.username}} <br>
+                    email : {{user.email}} <br>
+
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                editProfile: false,
+                timeOutId: null,
+                infoText: "",
+                message: {},
+                posts: [],
+                users: [],
+                mesDonnees: new FormData(),
+                token: "",
+                profile: {},
+                likes: 0,
+                logged: false,
+                registerForm: false,
+                indexUser: 0,
+            },
+
+            mounted() {
+                if (localStorage.getItem('profile')) {
+                    try {
+                        this.profile = JSON.parse(localStorage.getItem('profile'));
+                        if (this.profile.token) { this.signIn() };
+                        // if (this.profile.image == undefined ) {this.profile.image = "groupo.png"}
+                    } catch (e) {
+                        localStorage.removeItem('profile');
+
                     }
+                }
+            },
+            methods: {
+                modal(index) {
+                    this.indexUser = index
+                    $('#modalAlert').modal()
                 },
-                    methods:{
-                        modal(index){
-                            this.indexUser=index
-                           $('#modalAlert').modal()
-                        },
-                        htmlEntities(str) {
-                            return String(str).replace(/&apos;/g, "′").replace(/&quot;/g, '"');
-                        },
-                        written(post){let displayCross=true ;
-                        if (this.profile.isAdmin==false)  {displayCross=(this.profile.userId == post.UserId)}
-                        return displayCross},
+                htmlEntities(str) {
+                    return String(str).replace(/&apos;/g, "′").replace(/&quot;/g, '"');
+                },
+                written(post) {
+                    let displayCross = true;
+                    if (this.profile.isAdmin == false) { displayCross = (this.profile.userId == post.UserId) }
+                    return displayCross
+                },
 
-                        logOut(){
-                        this.logged=false;
-                        this.registerForm=false;
-                        this.removeUser();
-                        this.information={};
-                        },
+                logOut() {
+                    this.logged = false;
+                    this.registerForm = false;
+                    this.removeUser();
+                },
 
-                        // LOCALSTORAGE 
-                         addUser() {
-                            this.profile.token=this.token;
-                            this.saveUser();
-                        },
-                        removeUser() {
-                            this.profile={}
-                            this.saveUser();
-                        },
-                        saveUser() {
-                           let parsed = JSON.stringify(this.profile);
-                            localStorage.setItem('profile', parsed);
-                        },
-                        dislike(index) {
-                            axios.post('http://localhost:8080/api/messages/'+ this.posts[index].id + '/vote/dislike', {},
-                                {
-                                headers: { Authorization: ("Bearer " + this.token) }
-                                }).then(response => {                   
-                                this.posts[index].likes -= 1
-                                })
-                                .catch(error => console.log(error.response))
-                        },
-                        like(index){                           
-                            axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/like',{},
-                             {
-                                headers: { Authorization: ("Bearer " + this.token) }
-                                }).then(response => {                             
-                                  this.posts[index].likes += 1                               
-                                })
-                            .catch(error => console.log(error.response))
-                        },
-                        formatDate(date){const d=date.split(/[- : T]/);
-                        return d[2]+"/"+ d[1]+"/"+ d[0]
-                        },
+                // LOCALSTORAGE 
+                addUser() {
+                    this.profile.token = this.token;
+                    this.saveUser();
+                },
+                removeUser() {
+                    this.profile = {}
+                    this.saveUser();
+                },
+                saveUser() {
+                    let parsed = JSON.stringify(this.profile);
+                    localStorage.setItem('profile', parsed);
+                },
+                dislike(index) {
+                    axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/dislike', {},
+                        {
+                            headers: { Authorization: ("Bearer " + this.token) }
+                        }).then(response => {
+                            this.posts[index].likes -= 1
+                        })
+                        .catch(error => console.log(error.response))
+                },
+                like(index) {
+                    axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/like', {},
+                        {
+                            headers: { Authorization: ("Bearer " + this.token) }
+                        }).then(response => {
+                            this.posts[index].likes += 1
+                        })
+                        .catch(error => console.log(error.response))
+                },
+                formatDate(date) {
+                    const d = date.split(/[- : T]/);
+                    return d[2] + "/" + d[1] + "/" + d[0]
+                },
 
-                      
-                        register() {                            
-                            axios.post('http://localhost:8080/api/users/register', {       
-                                password: this.profile.password,
-                                username: this.profile.username,
-                                email: this.profile.email,
-                                image: this.profile.image,      
-                            }).then(response => {console.log(response.data)
-                            this.signIn();
 
-                            }
-                            )
-                             .catch(error => {console.log(error.response.data);
-                             this.information.text= error.response.data.error;
-                             this.information.color = "text-danger";
-                              setTimeout(() => {
-                                     this.information.text = ""
-                                 }, (1000));                            
-                             }
-                             )
-                        },
-                        updateProfile(){
-                            console.log ("this.profile.username : " + this.token)
-                             axios.put('http://localhost:8080/api/users/me', 
-                             {
-                                     username: this.profile.username,
-                                 email: this.profile.email,
-                                 // bio: this.profile.bio, 
-                                 image: this.profile.image,
-                                 }, {
-                                 headers: { Authorization: ("Bearer " + this.token) }
-                             }
-                    
-                            ).then(response => {
-                                console.log(response.data)
-                                this.information.text = "Bien enregistré";
-                                this.information.color = "text-success";
-                                this.signIn();
+                register() {
+                    // if (this.profile.image == undefined) { this.profile.image = "groupo.png" }                        
+                    axios.post('http://localhost:8080/api/users/register', {
+                        password: this.profile.password,
+                        username: this.profile.username,
+                        email: this.profile.email,
+                        image: this.profile.image,
+                    }).then(response => {
+                        console.log(response.data)
+                        this.signIn();
 
-                            }
-                            )
-                                .catch(error => {
-                                    console.log(error.response.data);
-                                    this.information.text = error.response.data.error;
-                                    this.information.color = "text-danger";
-                                    setTimeout(() => {
-                                        this.information.text = ""
-                                    }, (1000));
-                                }
-                                )
-                        },
-                        
-                        signIn() {                             
-                            axios.post('http://localhost:8080/api/users/login', {
-                                  password:this.profile.password ,
-                                username:this.profile.username ,
-                            })
-                            .then(response => {
-                                this.logged=true;
-                                this.registerForm=false;
-                                this.token= response.data.token;
-                                this.profile.userId= response.data.userId
-                                this.profile.isAdmin=response.data.isAdmin
-                                this.profile.image = response.data.image  
-                                this.profile.email = response.data.email                           
-                           
-                                this.addUser()
-                                console.log("this.profile.image :" + this.profile.image)
-                                })
-                            .catch(error => {
-                                console.log(error.response);
-                                
-                                this.information.text = error.response.data.error;
-                                this.information.color = "text-danger";
-                                setTimeout(() => {
-                                    this.information.text=""
-                                }, (1000));                               
-                            }
-                            )
-                        },
-                         allMessages() {
-                             this.users=[]
-                            axios.get('http://localhost:8080/api/messages').then(response => this.posts = response.data)
-                                                            .catch(error => console.log(error.response))
-                        },
-                        allUsers(){
-                            this.posts=[]
-                            axios.get('http://localhost:8080/api/admin/users').then(response => this.users = response.data)
-                                .catch(error => console.log(error.response))
-                        },
-                        postMessage() {
-                            axios.post('http://localhost:8080/api/messages/new', {
-                               title: this.profile.username,
-                                content: this.message.content,
-                            }, {
-                                headers: { Authorization: ("Bearer " + this.token) }
-                            }).then(response => {
-                                console.log(response.data)
-                                this.message.content=""
-                                this.allMessages() 
-                            }
-                            )
-                                .catch(error => console.log(error.response))
-                        },
-                        deleteMessage(index) {
-                            alert('Voulez vous supprimer : ' + this.posts[index].content + ' ? ? ?')
-                            axios.delete('http://localhost:8080/api/messages/new', { 
-                                headers: { Authorization: ("Bearer " + this.token) }
-                            , data : {id: this.posts[index].id,
-                                      authId:  this.posts[index].UserId}
-                               
-                            }).then(response => {
-                                console.log("response data : " + response.data)
-                                this.allMessages()
-                            }
-                            )
-                                .catch(error => console.log(error.response))
-                        },
-                         deleteUser(index) {
-                            // alert('Are you sure to delete : ' + this.users[index].username + ' ? ? ?')
-                            axios.delete('http://localhost:8080/api/users/me', {
-                                headers: { Authorization: ("Bearer " + this.token) }
-                                , data: { userId: this.users[index].id }
-
-                            }).then(response => {
-                                console.log("response data : " + response.data);
-                                this.allUsers();
-                                $('#modalAlert').modal('hide');                            }
-                            )
-                                .catch(error => console.log(error.response))
-                        },
-                        removeProfile(){
-                            alert('Voulez vous supprimer : ' + this.profile.username + ' ? ? ?')
-                            axios.delete('http://localhost:8080/api/users/me', {
-                           headers: { Authorization: ("Bearer " + this.token) }
-                            })
-                                .then(response => {                                                        
-                                    this.logOut();
-                                })
-                                .catch(error => {
-                                    console.log(error.response);
-                                    this.information.text = error.response.data.error;
-                                   ;
-                                }
-                                )
-
-                        },
-                    
                     }
-                })
- 
+                    )
+                        .catch(error => {
+                            console.log(error.response.data);
+                        }
+                        )
+                },
+                updateProfile() {
+                    console.log("this.profile.username : " + this.token)
+                    axios.put('http://localhost:8080/api/users/me',
+                        {
+                            username: this.profile.username,
+                            email: this.profile.email,
+                            image: this.profile.image,
+                        }, {
+                        headers: { Authorization: ("Bearer " + this.token) }
+                    }
 
-        </script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-            crossorigin="anonymous"></script>
-    </body>
+                    ).then(response => {
+                        console.log(response.data)
+                        this.signIn();
+
+                    }
+                    )
+                        .catch(error => {
+                            console.log(error.response.data);
+                        }
+                        )
+                },
+
+                signIn() {
+                    axios.post('http://localhost:8080/api/users/login', {
+                        password: this.profile.password,
+                        username: this.profile.username,
+                    })
+                        .then(response => {
+                            this.logged = true;
+                            this.registerForm = false;
+                            this.token = response.data.token;
+                            this.profile.userId = response.data.userId
+                            this.profile.isAdmin = response.data.isAdmin
+                            this.profile.image = response.data.image
+                            this.profile.email = response.data.email
+                            this.addUser()
+                        })
+                        .catch(error => {
+                            console.log(error.response);
+                        }
+                        )
+                },
+                allMessages() {
+                    this.users = []
+                    axios.get('http://localhost:8080/api/messages').then(response => this.posts = response.data)
+                        .catch(error => console.log(error.response))
+                },
+                allUsers() {
+                    this.posts = []
+                    axios.get('http://localhost:8080/api/admin/users').then(response => this.users = response.data)
+                        .catch(error => console.log(error.response))
+                },
+                postMessage() {
+                    axios.post('http://localhost:8080/api/messages/new', {
+                        title: this.profile.username,
+                        content: this.message.content,
+                    }, {
+                        headers: { Authorization: ("Bearer " + this.token) }
+                    }).then(response => {
+                        console.log(response.data)
+                        this.message.content = ""
+                        this.allMessages()
+                    }
+                    )
+                        .catch(error => console.log(error.response))
+                },
+                deleteMessage(index) {
+                    axios.delete('http://localhost:8080/api/messages/new', {
+                        headers: { Authorization: ("Bearer " + this.token) }
+                        , data: {
+                            id: this.posts[index].id,
+                            authId: this.posts[index].UserId
+                        }
+
+                    }).then(response => {
+                        console.log("response data : " + response.data)
+                        this.allMessages()
+                    }
+                    )
+                        .catch(error => console.log(error.response))
+                },
+                deleteUser(index) {
+                    axios.delete('http://localhost:8080/api/users/me', {
+                        headers: { Authorization: ("Bearer " + this.token) }
+                        , data: { userId: this.users[index].id }
+
+                    }).then(response => {
+                        console.log("response data : " + response.data);
+                        this.allUsers();
+                        $('#modalAlert').modal('hide');
+                    }
+                    )
+                        .catch(error => console.log(error.response))
+                },
+                removeProfile() {
+                    axios.delete('http://localhost:8080/api/users/me', {
+                        headers: { Authorization: ("Bearer " + this.token) }
+                    })
+                        .then(response => {
+                            this.logOut();
+                        })
+                        .catch(error => {
+                            console.log(error.response);
+                            ;
+                        }
+                        )
+
+                },
+
+            }
+        })
+
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>
 
 
