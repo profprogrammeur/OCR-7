@@ -23,8 +23,6 @@ if (req.method === 'OPTIONS'){
 }
     next();
 });
-// server.options('*', function (req, res) { res.sendStatus(200); });
-
 
 
 // Configure routes
