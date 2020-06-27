@@ -39,7 +39,7 @@
             <!-- <form class="row"> -->
             <div class="row justify-content-between mb-2 ">
                 <img class=" rounded col-6 mt-2" src="groupo2.png" alt="logo" width="100%" >
-                <button v-show="logged || registerForm" class="  mt-2 mr-2 col-2 btn-sm btn-danger  " type="submit"
+                <button v-show="logged || registerForm" class="  btn mt-2 mr-2 col-2 btn-lg btn-danger  " type="submit"
                     @click="logOut()">Sortir</button>
             </div>
 
@@ -80,7 +80,7 @@
                 <button v-show="logged && registerForm" class="btn btn-lg btn-danger btn-block" type="submit"
                     @click="removeProfile()">Supprimer le profil</button>
                 <button v-show="logged && !registerForm" class="btn btn-lg btn-warning btn-block" type="submit"
-                    @click="registerForm = true">Modifier le profil</button>
+                    @click="registerForm = true, clearScreen()">Modifier le profil</button>
                 <button v-show="logged && profile.isAdmin && !registerForm" class="btn btn-lg btn-warning btn-block"
                     type="submit" @click="allUsers()">Tous les profils</button>
 
@@ -100,10 +100,13 @@
                 <li v-for="(post,index) in posts" class="list-group-item mt-2 ">
                     <h4>{{htmlEntities(post.content)}}</h4>
                    le  {{formatDate(post.updatedAt)}} <br>
-                    <span class="badge badge-primary badge-pill"> {{post.likes}}</span>
-                    <span @click="like(index)">&#10084</span>
-                    <span @click="dislike(index)">&#128078</span>
-                    <button v-if="written(post)" class="  btn-danger rounded" @click="deleteMessage(index)">X</button>
+                   <div class="row justify-content-center">
+                    <span class="badge badge-primary badge-pill m-1"> {{post.likes}}</span>
+                    <div class="likeIcon m-1" @click="like(index)">&#10084</div>
+                    <div class="likeIcon m-1" @click="dislike(index)">&#128078</div>
+                    <button v-if="written(post)" class="   btn-xs btn-danger rounded" @click="deleteMessage(index)">X</button>
+                   </div>
+                    
                     <br> <i class="text-capitalize">{{post.title}}</i> <br>
                 </li>
             </ul>
@@ -111,7 +114,7 @@
             <ul v-if="logged" class="list-group mt-3">
                 <li v-for="(user,index) in users" class="list-group-item">
                     id : {{user.id}}
-                    <button class="  btn-danger rounded" @click="modal(index)">X</button><br>
+                    <button class=" btn-xs btn-danger rounded" @click="modal(index)">X</button><br>
                     nom : {{user.username}} <br>
                     email : {{user.email}} <br>
 
@@ -165,11 +168,15 @@
                     return displayCross
                 },
 
+                clearScreen(){
+                    this.posts=[];
+                    this.users=[];
+                },
+
                 logOut() {
                     this.logged = false;
                     this.registerForm = false;
-                    this.posts=[];
-                    this.users=[];
+                    this.clearScreen();
                     this.removeUser();
                 },
 
@@ -207,8 +214,6 @@
                         .catch(error => console.log(error.response))
                 },
                 formatDate(date) {
-                    console.log(date)
-                    console.log(date.split(/[- : T .]/))
                     const d = date.split(/[- : T]/);
                     return d[2] + "/" + d[1] + "/" + d[0] + " à " + d[3] +"h"+ d[4] +"m" + [5] +"s"
                 },
@@ -221,7 +226,6 @@
                         email: this.profile.email,
                         image: this.profile.image,
                     }).then(response => {
-                        console.log(response.data)
                         this.signIn();
 
                     }
@@ -232,7 +236,6 @@
                         )
                 },
                 updateProfile() {
-                    console.log("this.profile.username : " + this.token)
                     axios.put('http://localhost:8080/api/users/me',
                         {
                             username: this.profile.username,
@@ -243,7 +246,6 @@
                     }
 
                     ).then(response => {
-                        console.log(response.data)
                         this.signIn();
 
                     }

@@ -60,3 +60,17 @@ body {
 #sortir {
     height:200px !important;
 }
+
+.btn-success {
+    background-color: #175E26;
+}
+
+.btn:hover , .form-control:hover, .likeIcon:hover, .btn-xs:hover {
+    transition: transform .3s;
+    transform: scale(1.05);
+}
+
+.likeIcon:hover, .btn-xs:hover {
+    transition: transform .3s;
+    transform: scale(1.3);
+}
