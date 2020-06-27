@@ -18,28 +18,30 @@
 
 <body>
 
-    <div id="app" class="text-center ">
-        <!-- Modal -->
-        <div class="modal fade" id="modalAlert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        Voulez-vous vraiment supprimer ceci ?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">NON</button>
-                        <button style="height: 20px !important;" @click="deleteUser(indexUser)" type="button" class="btn btn-primary">OUI</button>
+    <div id="app" class="text-center " >
+      
+
+        <div style="width: 100vw; " class="container" v-bind:class="{isAdmin: profile.isAdmin}">
+            <!-- Modal -->
+            <div class="modal fade" id="modalAlert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Voulez-vous vraiment supprimer ceci ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">NON</button>
+                            <button style="height: 20px !important;" @click="deleteUser(indexUser)" type="button"
+                                class="btn btn-primary">OUI</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div style="width: 100vw;" class="container" v-bind:class="{isAdmin: profile.isAdmin}">
             <!-- <form class="row"> -->
-            <div class="row justify-content-between mb-2 ">
-                <img class=" rounded col-6 mt-2" src="groupo2.png" alt="logo" width="100%" >
-                <button v-show="logged || registerForm" class="  btn mt-2 mr-2 col-2 btn-lg btn-danger  " type="submit"
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+                <img class=" rounded col-8 mt-2" src="groupo3.png" alt="logo" height="100%">
+                <button v-show="logged || registerForm" class="  btn btn-xs col-4 btn-danger mt-2" type="submit"
                     @click="logOut()">Sortir</button>
             </div>
 
@@ -99,15 +101,15 @@
             <ul v-if="logged" class="list-group mt-3 ">
                 <li v-for="(post,index) in posts" class="list-group-item mt-2 ">
                     <h4>{{htmlEntities(post.content)}}</h4>
-                   le  {{formatDate(post.updatedAt)}} <br>
-                   <div class="row justify-content-center">
-                    <span class="badge badge-primary badge-pill m-1"> {{post.likes}}</span>
-                    <div class="likeIcon m-1" @click="like(index)">&#10084</div>
-                    <div class="likeIcon m-1" @click="dislike(index)">&#128078</div>
-                    <button v-if="written(post)" class="   btn-xs btn-danger rounded" @click="deleteMessage(index)">X</button>
-                   </div>
-                    
-                    <br> <i class="text-capitalize">{{post.title}}</i> <br>
+                    le {{formatDate(post.createdAt)}} <br>
+                    <div class="row justify-content-center">
+                        <span class="badge badge-primary badge-pill m-1"> {{post.likes}}</span>
+                        <div class="likeIcon m-1" @click="like(index)">&#10084</div>
+                        <div class="likeIcon m-1" @click="dislike(index)">&#128078</div>
+                        <button v-if="written(post)" class="btn-xs btn-danger rounded"
+                            @click="deleteMessage(index)">X</button>
+                    </div>
+                    <em class="text-capitalize">{{post.title}}</em> <br>
                 </li>
             </ul>
 
@@ -168,9 +170,9 @@
                     return displayCross
                 },
 
-                clearScreen(){
-                    this.posts=[];
-                    this.users=[];
+                clearScreen() {
+                    this.posts = [];
+                    this.users = [];
                 },
 
                 logOut() {
@@ -194,15 +196,15 @@
                     localStorage.setItem('profile', parsed);
                 },
                 dislike(index) {
-                    if (this.posts[index].likes>0){
+                    if (this.posts[index].likes > 0) {
                         axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/dislike', {},
-                        {
-                            headers: { Authorization: ("Bearer " + this.token) }
-                        }).then(response => {
-                            this.posts[index].likes -= 1
-                        })
-                        .catch(error => console.log(error.response))
-                    }              
+                            {
+                                headers: { Authorization: ("Bearer " + this.token) }
+                            }).then(response => {
+                                this.posts[index].likes -= 1
+                            })
+                            .catch(error => console.log(error.response))
+                    }
                 },
                 like(index) {
                     axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/like', {},
@@ -213,9 +215,10 @@
                         })
                         .catch(error => console.log(error.response))
                 },
-                formatDate(date) {
-                    const d = date.split(/[- : T]/);
-                    return d[2] + "/" + d[1] + "/" + d[0] + " à " + d[3] +"h"+ d[4] +"m" + [5] +"s"
+                formatDate(createdDate) {
+                    console.log(createdDate)
+                    let d = createdDate.split(/[- : T .]/);
+                    return d[2] + "/" + d[1] + "/" + d[0] + " à " + d[3] + "h" + d[4] + "m" + d[5] + "s"
                 },
 
 
