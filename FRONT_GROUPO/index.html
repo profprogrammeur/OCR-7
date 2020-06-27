@@ -29,7 +29,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">NON</button>
-                        <button @click="deleteUser(indexUser)" type="button" class="btn btn-primary">OUI</button>
+                        <button style="height: 20px !important;" @click="deleteUser(indexUser)" type="button" class="btn btn-primary">OUI</button>
                     </div>
                 </div>
             </div>
@@ -37,9 +37,9 @@
 
         <div style="width: 100vw;" class="container" v-bind:class="{isAdmin: profile.isAdmin}">
             <!-- <form class="row"> -->
-            <div class="row justify-content-between mb-2">
-                <img class="mb-1 mt-2 ml-3 rounded-circle " src="groupo.png" alt="logo" width="30%" height="30%">
-                <button v-show="logged || registerForm" class="  mr-1 mb-1 btn btn-sm btn-outline-*  " type="submit"
+            <div class="row justify-content-between mb-2 ">
+                <img class=" rounded col-6 mt-2" src="groupo2.png" alt="logo" width="100%" >
+                <button v-show="logged || registerForm" class="  mt-2 mr-2 col-2 btn-sm btn-danger  " type="submit"
                     @click="logOut()">Sortir</button>
             </div>
 
@@ -96,10 +96,10 @@
             <input v-on:keyup.enter="postMessage" v-show="logged && !registerForm" v-model="message.content" type="text"
                 id="inputUser" class=" form-control mt-2" placeholder="Ajouter un message" required autofocus>
 
-            <ul v-show="logged" class="list-group mt-3 ">
+            <ul v-if="logged" class="list-group mt-3 ">
                 <li v-for="(post,index) in posts" class="list-group-item mt-2 ">
                     <h4>{{htmlEntities(post.content)}}</h4>
-                    publié le : {{formatDate(post.updatedAt)}} <br>
+                   le  {{formatDate(post.updatedAt)}} <br>
                     <span class="badge badge-primary badge-pill"> {{post.likes}}</span>
                     <span @click="like(index)">&#10084</span>
                     <span @click="dislike(index)">&#128078</span>
@@ -108,7 +108,7 @@
                 </li>
             </ul>
 
-            <ul v-show="logged" class="list-group mt-3">
+            <ul v-if="logged" class="list-group mt-3">
                 <li v-for="(user,index) in users" class="list-group-item">
                     id : {{user.id}}
                     <button class="  btn-danger rounded" @click="modal(index)">X</button><br>
@@ -168,6 +168,8 @@
                 logOut() {
                     this.logged = false;
                     this.registerForm = false;
+                    this.posts=[];
+                    this.users=[];
                     this.removeUser();
                 },
 
@@ -185,13 +187,15 @@
                     localStorage.setItem('profile', parsed);
                 },
                 dislike(index) {
-                    axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/dislike', {},
+                    if (this.posts[index].likes>0){
+                        axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/dislike', {},
                         {
                             headers: { Authorization: ("Bearer " + this.token) }
                         }).then(response => {
                             this.posts[index].likes -= 1
                         })
                         .catch(error => console.log(error.response))
+                    }              
                 },
                 like(index) {
                     axios.post('http://localhost:8080/api/messages/' + this.posts[index].id + '/vote/like', {},
@@ -203,8 +207,10 @@
                         .catch(error => console.log(error.response))
                 },
                 formatDate(date) {
+                    console.log(date)
+                    console.log(date.split(/[- : T .]/))
                     const d = date.split(/[- : T]/);
-                    return d[2] + "/" + d[1] + "/" + d[0]
+                    return d[2] + "/" + d[1] + "/" + d[0] + " à " + d[3] +"h"+ d[4] +"m" + [5] +"s"
                 },
 
 
