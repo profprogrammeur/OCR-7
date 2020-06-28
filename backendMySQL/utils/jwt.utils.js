@@ -17,14 +17,12 @@ module.exports = {
             })
     },
     parseAuthorization: function (authorization) {
-        // console.log("parse auth : " + authorization.replace('Bearer ', '') )
 
         return (authorization != null) ? authorization.replace('Bearer ', '') : null;
     },
     getUserId: function (authorization) {
         var userId = -1;
        let token = module.exports.parseAuthorization(authorization);
-        // token=JSON.parse(token)
         if (token != null) {
             try {
                 var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
