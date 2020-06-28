@@ -77,7 +77,7 @@ module.exports = {
         }
 
         models.Message.findAll({
-            order: [(order != null) ? order.split(':') : ['updatedAt', 'DESC']],
+            order: [(order != null) ? order.split(':') : ['createdAt', 'DESC']],
             attributes: (fields !== '*' && fields != null) ? fields.split(',') : null,
             limit: (!isNaN(limit)) ? limit : null,
             offset: (!isNaN(offset)) ? offset : null,
