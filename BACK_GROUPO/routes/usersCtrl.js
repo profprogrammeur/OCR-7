@@ -1,7 +1,6 @@
 // Imports
 var bcrypt = require('bcrypt');
 var jwtUtils = require('../utils/jwt.utils');
-const multer = require('../utils/multer-config');
 
 var models = require('../models');
 var asyncLib = require('async');

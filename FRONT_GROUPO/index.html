@@ -216,7 +216,6 @@
                         .catch(error => console.log(error.response))
                 },
                 formatDate(createdDate) {
-                    console.log(createdDate)
                     let d = createdDate.split(/[- : T .]/);
                     return d[2] + "/" + d[1] + "/" + d[0] + " à " + d[3] + "h" + d[4] + "m" + d[5] + "s"
                 },

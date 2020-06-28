@@ -16,7 +16,6 @@ module.exports = {
         // Getting auth header
         const headerAuth = req.headers['authorization'];
         const userId = jwtUtils.getUserId(headerAuth);
-        console.log("UserId : " + userId)
 
         // Params
         const title = entities.encode(req.body.title);
@@ -49,7 +48,7 @@ module.exports = {
                         title: title,
                         content: content,
                         likes: 0,
-                        UserId: userFound.id
+                        userId: userFound.id
                     })
                         .then(function (newMessage) {
                             done(newMessage);
@@ -77,7 +76,7 @@ module.exports = {
         }
 
         models.Message.findAll({
-            order: [(order != null) ? order.split(':') : ['createdAt', 'DESC']],
+            order: [[(order != null) ? order.split(':') : ['createdAt', 'DESC']]],
             attributes: (fields !== '*' && fields != null) ? fields.split(',') : null,
             limit: (!isNaN(limit)) ? limit : null,
             offset: (!isNaN(offset)) ? offset : null,
@@ -88,7 +87,6 @@ module.exports = {
         }).then(function (messages) {
             if (messages) {
                 res.status(200).json(messages);
-                console.log(messages)
             } else {
                 res.status(404).json({ "error": "no messages found" });
             }

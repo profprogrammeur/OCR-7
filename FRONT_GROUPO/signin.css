@@ -49,14 +49,6 @@ body {
     background-color: #ff9b05;
 }
 
-.ul {
-    /* max-width: 50% !important; */
-   
-}
-
-#sortir {
-    height:200px !important;
-}
 
 .btn-success {
     background-color: #175E26;
@@ -67,7 +59,7 @@ body {
     transform: scale(1.05);
 }
 
-.likeIcon:hover, .btn-xs:hover {
+.likeIcon:hover {
     transition: transform .3s;
     transform: scale(1.3);
 }
