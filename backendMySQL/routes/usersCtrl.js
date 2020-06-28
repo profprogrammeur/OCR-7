@@ -1,7 +1,6 @@
 // Imports
 var bcrypt = require('bcrypt');
 var jwtUtils = require('../utils/jwt.utils');
-const multer = require('../utils/multer-config');
 
 var models = require('../models');
 var asyncLib = require('async');
@@ -13,8 +12,6 @@ const PASSWORD_REGEX = /^(?=.*\d).{5,30}$/;
 // Routes
 module.exports = {
     register: function (req, res) {
-
-        console.log("req.body222 : " + req.body.image)
 
         // Params
         var email = req.body.email;
@@ -45,10 +42,6 @@ module.exports = {
                     attributes: ['email'],
                     where: { email: email }
                 })
-                // models.User.findOne({
-                //     attributes: ['user'],
-                //     where: { user: user }
-                // })
                     .then(function (userFound) {
                         done(null, userFound);
                     })
@@ -96,10 +89,8 @@ module.exports = {
         // Params
         var username = req.body.username;
 
-        // var email = req.body.email;
         var password = req.body.password;
 
-        // if (email == null || password == null) {
         if (username == null || password == null) {
 
             return res.status(400).json({ 'error': 'missing parameters' });
@@ -108,7 +99,6 @@ module.exports = {
         asyncLib.waterfall([
             function (done) {
                 models.User.findOne({
-                    // where: { email: email }
                     where: { username: username }
 
                 })
@@ -139,7 +129,7 @@ module.exports = {
             if (userFound) {
                 return res.status(201).json({
                     'userId': userFound.id,
-                    'isAdmin':userFound.isAdmin,
+                    'isAdmin': userFound.isAdmin,
                     'image': userFound.image,
                     'username': userFound.username,
                     'email': userFound.email,
@@ -173,27 +163,16 @@ module.exports = {
     },
     listUsers: function (req, res) {
         var fields = req.query.fields;
-        // var limit = parseInt(req.query.limit);
         var offset = parseInt(req.query.offset);
         var order = req.query.order;
-        console.log(req.query)
-        // if (limit > ITEMS_LIMIT) {
-        //     limit = ITEMS_LIMIT;
-        // }
+
 
         models.User.findAll({
             order: [(order != null) ? order.split(':') : ['updatedAt', 'DESC']],
-            // attributes: (fields !== '*' && fields != null) ? fields.split(',') : null,
-            // limit: (!isNaN(limit)) ? limit : null,
-            // offset: (!isNaN(offset)) ? offset : null,
-            // include: [{
-            //     model: models.User,
-            //     attributes: ['username']
-            // }]
+
         }).then(function (users) {
             if (users) {
                 res.status(200).json(users);
-                console.log(users)
             } else {
                 res.status(404).json({ "error": "no users found" });
             }
@@ -206,45 +185,29 @@ module.exports = {
         // Getting auth header
         var headerAuth = req.headers['authorization'];
         var userId = jwtUtils.getUserId(headerAuth);
-        console.log("userId : " + userId);
         // Params
         var email = req.body.email;
         var username = req.body.username;
         var password = req.body.password;
-        const image = req.body.image;      
-    //     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    // });
-        console.log("username : " + username);
+        const image = req.body.image;
 
         asyncLib.waterfall([
             function (done) {
-                // function (done) {
-                    models.User.findOne({
-                        // where: { email: email }
-                        where: { id : userId }
-
-                //     })
-                // models.User.findOne({
-                //     attributes: ['id'],
-                //     where: { username: username }
+                models.User.findOne({
+                    where: { id: userId }
                 }).then(function (userFound) {
                     done(null, userFound);
-                    console.log("userfoun : " + userFound)
                 })
                     .catch(function (err) {
-                        console.log("err : " +err)
+                        console.log("err : " + err)
                         return res.status(500).json({ 'error': err });
                     });
             },
             function (userFound, done) {
                 if (userFound) {
                     userFound.update({
-                        // bio: (bio ? bio : userFound.bio)
-                         email: email,
+                        email: email,
                         username: username,
-                        // password: bcryptedPassword,
-                        // bio: bio,
-                        // isAdmin: 0,
                         image: image,
                     }).then(function () {
                         done(userFound);
@@ -267,23 +230,14 @@ module.exports = {
         // Getting auth header
         var headerAuth = req.headers['authorization'];
         let userId = 0;
-        // var userId = req.body.userId ;
-        console.log("first userId : " + userId)
-        console.log("req.body.userId : " + req.body.userId)
-        if (req.body.userId!==undefined) {
-            userId = req.body.userId } else {
-            console.log("else userId : " + userId)
-            userId =jwtUtils.getUserId(headerAuth)
-            console.log("admin userId : " + userId)
-            };
-
-        console.log("userId : " + userId)
-// userId=2
-
+        if (req.body.userId !== undefined) {
+            userId = req.body.userId
+        } else {
+            userId = jwtUtils.getUserId(headerAuth)
+        };
         asyncLib.waterfall([
             function (done) {
                 models.User.findOne({
-                    // attributes: ['id', 'bio'],
                     where: { id: userId }
                 }).then(function (userFound) {
                     done(null, userFound);
@@ -299,7 +253,6 @@ module.exports = {
                     })
                         .then(function () {
                             done(userFound);
-                            // res.status(200).json({ 'success': 'user ' + userId + ' deleted' });
                         })
                         .catch(function (err) {
                             res.status(500).json({ 'error': 'cannot fetch user' });
@@ -315,24 +268,6 @@ module.exports = {
                 return res.status(500).json({ 'error': 'cannot update user profile' });
             }
         });
-
-
-
-
-        // if (userId < 0)
-        //     return res.status(400).json({ 'error': 'wrong token' });
-
-        // models.User.destroy({
-        //     where: { id: userId }
-        // })
-        // .then(function () {
-
-        //     res.status(200).json({ 'success': 'user ' + userId + ' deleted' });
-        // })
-        // .catch(function (err) {
-        //     res.status(500).json({ 'error': 'cannot fettttch user' });
-        // });
-
 
     },
 }

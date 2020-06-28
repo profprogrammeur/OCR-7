@@ -17,8 +17,6 @@ exports.router = (function () {
 
     apiRouter.route('/admin/users').get(usersCtrl.listUsers);
 
-   
-
     // Messages routes
     apiRouter.route('/messages/new/').post(messagesCtrl.createMessage);
     apiRouter.route('/messages/new/').delete(messagesCtrl.deleteMessage);
